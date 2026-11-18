@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Pipeline Explorer</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 840px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      background-color: #f9fafb;
+      color: #111827;
+    }
+
+    header {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 6px 0;
+      color: #1f2937;
+    }
+
+    p.subtitle {
+      margin: 0;
+      color: #4b5563;
+      font-size: 16px;
+    }
+
+    .stage-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #e0e7ff;
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 20px;
+      color: #111827;
+    }
+
+    .stage-desc {
+      color: #4b5563;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #374151;
+    }
+
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 15px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .button-row {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      background-color: #4f46e5;
+      color: #ffffff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    button:hover {
+      background-color: #4338ca;
+    }
+
+    button.secondary {
+      background-color: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    button.secondary:hover {
+      background-color: #e5e7eb;
+    }
+
+    .output-box {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #f3f4f6;
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .output-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .token-count {
+      font-size: 13px;
+      color: #6b7280;
+      background: #f3f4f6;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .token-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .token-chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      min-width: 48px;
+      text-align: center;
+      transition: transform 0.1s ease;
+    }
+
+    .token-chip:hover {
+      transform: translateY(-2px);
+    }
+
+    .token-text {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .token-id {
+      font-size: 11px;
+      color: #4b5563;
+      margin-top: 3px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .id-array-box {
+      background-color: #1e293b;
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .id-array-label {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>LLM Pipeline Explorer</h1>
+    <p class="subtitle">An interactive guide to understanding how LLMs process text.</p>
+  </header>
+
+  <main id="app">
+    <!-- Step 1: Text Input & Tokenization -->
+    <section class="stage-card">
+      <span class="badge">Step 1</span>
+      <h2>Text Input & Tokenization</h2>
+      <p class="stage-desc">
+        Computers do not understand letters or words directly. Before a Language Model can process any prompt, the text is split into small pieces called <strong>tokens</strong> (words, sub-words, or punctuation marks). Each token is then looked up in a vocabulary table to get a unique <strong>Token ID</strong> number.
+      </p>
+
+      <label for="promptInput">Enter your text prompt:</label>
+      <textarea id="promptInput" rows="3">The quick brown fox jumps over the lazy dog.</textarea>
+
+      <div class="button-row">
+        <button id="tokenizeBtn">Tokenize Text</button>
+        <button id="sampleBtn" class="secondary">Load Another Sample</button>
+      </div>
+
+      <div class="output-box">
+        <div class="output-header">
+          <span class="output-title">Tokens Breakdown</span>
+          <span id="tokenCountBadge" class="token-count">0 tokens</span>
+        </div>
+
+        <!-- Token chips rendered here -->
+        <div id="tokensContainer" class="token-container"></div>
+
+        <div class="id-array-label">Token IDs Array (What the model actually receives):</div>
+        <div id="tokenIdsDisplay" class="id-array-box">[]</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // WHAT THIS DOES: A starter dictionary of words with fixed numbers so common words always get the same ID
+    const vocabulary = {
+      "the": 101,
+      "quick": 102,
+      "brown": 103,
+      "fox": 104,
+      "jumps": 105,
+      "over": 106,
+      "lazy": 107,
+      "dog": 108,
+      ".": 109,
+      "hello": 110,
+      "world": 111,
+      "!": 112,
+      "how": 113,
+      "does": 114,
+      "an": 115,
+      "llm": 116,
+      "work": 117,
+      "?": 118,
+      "ai": 119,
+      "is": 120,
+      "fun": 121
+    };
+
+    // WHAT THIS DOES: Keeps track of numbers to assign whenever a new unknown word is typed
+    let nextId = 200;
+
+    // WHAT THIS DOES: A palette of soft colors used to make adjacent token chips look visually distinct
+    const chipColors = [
+      { bg: "#dbeafe", border: "#bfdbfe" }, // Blue
+      { bg: "#dcfce7", border: "#bbf7d0" }, // Green
+      { bg: "#fef3c7", border: "#fde68a" }, // Yellow
+      { bg: "#f3e8ff", border: "#e9d5ff" }, // Purple
+      { bg: "#ffe4e6", border: "#fecdd3" }, // Pink
+      { bg: "#ffedd5", border: "#fed7aa" }  // Orange
+    ];
+
+    // WHAT THIS DOES: Finds an existing ID for a word or creates a new one if it's new to our dictionary
+    function getOrAssignTokenId(word) {
+      const lower = word.toLowerCase();
+      if (!vocabulary[lower]) {
+        vocabulary[lower] = nextId++;
+      }
+      return vocabulary[lower];
+    }
+
+    // WHAT THIS DOES: Splits a raw sentence into words and punctuation marks
+    function tokenizeText(text) {
+      if (!text || text.trim() === "") {
+        return [];
+      }
+      // Matches alphanumeric word chunks or individual punctuation characters
+      const matches = text.match(/\w+|[^\s\w]/g);
+      return matches || [];
+    }
+
+    // WHAT THIS DOES: Reads the text box, generates tokens, and updates the chips and token ID array on the screen
+    function runTokenization() {
+      const input = document.getElementById("promptInput");
+      const container = document.getElementById("tokensContainer");
+      const countBadge = document.getElementById("tokenCountBadge");
+      const idsDisplay = document.getElementById("tokenIdsDisplay");
+
+      const text = input.value;
+      const tokens = tokenizeText(text);
+      const tokenIds = [];
+
+      // Clear previous output
+      container.innerHTML = "";
+
+      if (tokens.length === 0) {
+        countBadge.textContent = "0 tokens";
+        container.innerHTML = "<span style='color: #9ca3af; font-size: 14px;'>No text entered. Type something above to see tokens.</span>";
+        idsDisplay.textContent = "[]";
+        return;
+      }
+
+      // Update count badge
+      countBadge.textContent = tokens.length + (tokens.length === 1 ? " token" : " tokens");
+
+      // Render each token as a colored chip
+      tokens.forEach(function(token, index) {
+        const id = getOrAssignTokenId(token);
+        tokenIds.push(id);
+
+        const color = chipColors[index % chipColors.length];
+
+        const chip = document.createElement("div");
+        chip.className = "token-chip";
+        chip.style.backgroundColor = color.bg;
+        chip.style.borderColor = color.border;
+
+        const textSpan = document.createElement("span");
+        textSpan.className = "token-text";
+        textSpan.textContent = token;
+
+        const idSpan = document.createElement("span");
+        idSpan.className = "token-id";
+        idSpan.textContent = "ID: " + id;
+
+        chip.appendChild(textSpan);
+        chip.appendChild(idSpan);
+        container.appendChild(chip);
+      });
+
+      // Display the numeric array that models consume
+      idsDisplay.textContent = "[ " + tokenIds.join(", ") + " ]";
+    }
+
+    // WHAT THIS DOES: Prepares a list of sample sentences and loads one into the text box when clicked
+    const sampleSentences = [
+      "Hello world! How does an LLM work?",
+      "AI is fun and helpful.",
+      "The quick brown fox jumps over the lazy dog.",
+      "Machine learning models predict the next token."
+    ];
+    let sampleIndex = 0;
+
+    function loadNextSample() {
+      sampleIndex = (sampleIndex + 1) % sampleSentences.length;
+      document.getElementById("promptInput").value = sampleSentences[sampleIndex];
+      runTokenization();
+    }
+
+    // WHAT THIS DOES: Sets up button click listeners and runs the tokenizer once when the page finishes loading
+    document.getElementById("tokenizeBtn").addEventListener("click", runTokenization);
+    document.getElementById("sampleBtn").addEventListener("click", loadNextSample);
+
+    // Initial run with default prompt text
+    runTokenization();
+  </script>
+</body>
+</html>
