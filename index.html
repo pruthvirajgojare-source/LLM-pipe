@@ -3,160 +3,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LLM Pipeline Explorer</title>
+  <title>LLM Pipeline Explorer // CYBERPUNK_EDITION</title>
   <style>
+    /* Cyberpunk dark theme styling with neon accents and futuristic HUD aesthetic */
+    :root {
+      --bg-dark: #070913;
+      --card-bg: #0e1222;
+      --card-border: #1e2942;
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff007f;
+      --neon-yellow: #ffe600;
+      --neon-green: #00ff88;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      max-width: 840px;
-      margin: 40px auto;
+      font-family: "Courier New", Courier, "Fira Code", monospace;
+      max-width: 860px;
+      margin: 30px auto;
       padding: 0 20px;
       line-height: 1.6;
-      background-color: #f9fafb;
-      color: #111827;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(255, 0, 127, 0.15) 0%, transparent 50%),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+      color: var(--text-main);
     }
 
     header {
-      border-bottom: 2px solid #e5e7eb;
-      padding-bottom: 16px;
-      margin-bottom: 24px;
+      border-bottom: 2px solid var(--neon-cyan);
+      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
+      padding-bottom: 18px;
+      margin-bottom: 28px;
+      position: relative;
     }
 
     h1 {
       margin: 0 0 6px 0;
-      color: #1f2937;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 28px;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.6), 0 0 20px rgba(0, 240, 255, 0.3);
     }
 
     p.subtitle {
       margin: 0;
-      color: #4b5563;
-      font-size: 16px;
+      color: var(--neon-pink);
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     .stage-card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--neon-cyan);
+      border-radius: 6px;
       padding: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 240, 255, 0.02);
       margin-bottom: 24px;
+      position: relative;
     }
 
     .badge {
       display: inline-block;
-      background-color: #e0e7ff;
-      color: #3730a3;
-      font-size: 12px;
+      background-color: rgba(255, 0, 127, 0.15);
+      color: var(--neon-pink);
+      border: 1px solid var(--neon-pink);
+      font-size: 11px;
       font-weight: 700;
       padding: 3px 8px;
-      border-radius: 4px;
+      border-radius: 2px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.3);
     }
 
     h2 {
       margin-top: 0;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-size: 20px;
-      color: #111827;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .stage-desc {
-      color: #4b5563;
+      color: var(--text-muted);
       font-size: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+    }
+
+    .stage-desc strong {
+      color: var(--neon-cyan);
     }
 
     label {
       display: block;
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 6px;
-      color: #374151;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: var(--neon-yellow);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     textarea {
       width: 100%;
       box-sizing: border-box;
       padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 15px;
+      background: #060810;
+      border: 1px solid #1f2942;
+      border-radius: 4px;
+      font-size: 14px;
       font-family: inherit;
+      color: #e2e8f0;
       resize: vertical;
       min-height: 80px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     textarea:focus {
       outline: none;
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
     }
 
     .button-row {
-      margin-top: 12px;
+      margin-top: 14px;
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
 
     button {
-      background-color: #4f46e5;
-      color: #ffffff;
+      background-color: var(--neon-cyan);
+      color: #05070f;
       border: none;
-      padding: 9px 18px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       cursor: pointer;
-      transition: background-color 0.15s ease;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+      transition: all 0.2s ease;
     }
 
     button:hover {
-      background-color: #4338ca;
+      background-color: #ffffff;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.8);
+      transform: translateY(-1px);
     }
 
     button.secondary {
-      background-color: #f3f4f6;
-      color: #374151;
-      border: 1px solid #d1d5db;
+      background-color: transparent;
+      color: var(--neon-pink);
+      border: 1px solid var(--neon-pink);
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.3);
     }
 
     button.secondary:hover {
-      background-color: #e5e7eb;
+      background-color: rgba(255, 0, 127, 0.15);
+      box-shadow: 0 0 16px rgba(255, 0, 127, 0.6);
+      color: #ffffff;
     }
 
     .output-box {
-      margin-top: 20px;
+      margin-top: 22px;
       padding-top: 18px;
-      border-top: 1px solid #f3f4f6;
+      border-top: 1px solid var(--card-border);
     }
 
     .output-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .output-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
-      color: #374151;
+      color: var(--neon-yellow);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .token-count {
-      font-size: 13px;
-      color: #6b7280;
-      background: #f3f4f6;
-      padding: 2px 8px;
-      border-radius: 12px;
+      font-size: 12px;
+      color: var(--neon-green);
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid var(--neon-green);
+      padding: 2px 10px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
     }
 
     .token-container {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .token-chip {
@@ -164,84 +221,88 @@
       flex-direction: column;
       align-items: center;
       padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      min-width: 48px;
+      border-radius: 4px;
+      min-width: 50px;
       text-align: center;
-      transition: transform 0.1s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
     }
 
     .token-chip:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px) scale(1.03);
     }
 
     .token-text {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 14px;
       font-weight: 700;
-      color: #1f2937;
+      letter-spacing: 0.5px;
     }
 
     .token-id {
-      font-size: 11px;
-      color: #4b5563;
-      margin-top: 3px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      color: #cbd5e1;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+      opacity: 0.85;
     }
 
     .id-array-box {
-      background-color: #1e293b;
-      color: #e2e8f0;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      padding: 12px 16px;
-      border-radius: 6px;
+      background-color: #04060c;
+      color: var(--neon-green);
+      border: 1px solid #1a2238;
+      border-left: 3px solid var(--neon-green);
+      padding: 14px 16px;
+      border-radius: 4px;
       font-size: 13px;
       overflow-x: auto;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+      letter-spacing: 1px;
     }
 
     .id-array-label {
-      font-size: 12px;
-      color: #94a3b8;
-      margin-bottom: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1.5px;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>LLM Pipeline Explorer</h1>
-    <p class="subtitle">An interactive guide to understanding how LLMs process text.</p>
+    <h1>// LLM PIPELINE EXPLORER //</h1>
+    <p class="subtitle">&gt; SYSTEM STATUS: ONLINE // PROTOCOL: NEURAL_DISSECT</p>
   </header>
 
   <main id="app">
     <!-- Step 1: Text Input & Tokenization -->
     <section class="stage-card">
-      <span class="badge">Step 1</span>
-      <h2>Text Input & Tokenization</h2>
+      <span class="badge">[ STAGE_01 ]</span>
+      <h2>Input &amp; Tokenization Matrix</h2>
       <p class="stage-desc">
-        Computers do not understand letters or words directly. Before a Language Model can process any prompt, the text is split into small pieces called <strong>tokens</strong> (words, sub-words, or punctuation marks). Each token is then looked up in a vocabulary table to get a unique <strong>Token ID</strong> number.
+        Neural networks do not process raw human language directly. Text inputs are sliced into atomic units called <strong>tokens</strong> (subwords, words, and symbols). Each token maps to a unique numerical identifier in the model's vocabulary matrix.
       </p>
 
-      <label for="promptInput">Enter your text prompt:</label>
+      <label for="promptInput">&gt; PROMPT_INPUT:</label>
       <textarea id="promptInput" rows="3">The quick brown fox jumps over the lazy dog.</textarea>
 
       <div class="button-row">
-        <button id="tokenizeBtn">Tokenize Text</button>
-        <button id="sampleBtn" class="secondary">Load Another Sample</button>
+        <button id="tokenizeBtn">EXECUTE TOKENIZATION</button>
+        <button id="sampleBtn" class="secondary">CYCLE_DATASET</button>
       </div>
 
       <div class="output-box">
         <div class="output-header">
-          <span class="output-title">Tokens Breakdown</span>
-          <span id="tokenCountBadge" class="token-count">0 tokens</span>
+          <span class="output-title">&gt; TOKEN_DISSECTION</span>
+          <span id="tokenCountBadge" class="token-count">0 TOKENS</span>
         </div>
 
         <!-- Token chips rendered here -->
         <div id="tokensContainer" class="token-container"></div>
 
-        <div class="id-array-label">Token IDs Array (What the model actually receives):</div>
+        <div class="id-array-label">&gt; TENSOR_INPUT_VECTOR (MODEL NUMERICAL INPUT):</div>
         <div id="tokenIdsDisplay" class="id-array-box">[]</div>
       </div>
     </section>
@@ -276,14 +337,14 @@
     // WHAT THIS DOES: Keeps track of numbers to assign whenever a new unknown word is typed
     let nextId = 200;
 
-    // WHAT THIS DOES: A palette of soft colors used to make adjacent token chips look visually distinct
+    // WHAT THIS DOES: Cyberpunk neon color palette for token chips with glow and contrast styling
     const chipColors = [
-      { bg: "#dbeafe", border: "#bfdbfe" }, // Blue
-      { bg: "#dcfce7", border: "#bbf7d0" }, // Green
-      { bg: "#fef3c7", border: "#fde68a" }, // Yellow
-      { bg: "#f3e8ff", border: "#e9d5ff" }, // Purple
-      { bg: "#ffe4e6", border: "#fecdd3" }, // Pink
-      { bg: "#ffedd5", border: "#fed7aa" }  // Orange
+      { bg: "rgba(0, 240, 255, 0.12)", border: "#00f0ff", text: "#00f0ff", glow: "rgba(0, 240, 255, 0.35)" },
+      { bg: "rgba(255, 0, 127, 0.12)", border: "#ff007f", text: "#ff007f", glow: "rgba(255, 0, 127, 0.35)" },
+      { bg: "rgba(255, 230, 0, 0.12)", border: "#ffe600", text: "#ffe600", glow: "rgba(255, 230, 0, 0.35)" },
+      { bg: "rgba(0, 255, 136, 0.12)", border: "#00ff88", text: "#00ff88", glow: "rgba(0, 255, 136, 0.35)" },
+      { bg: "rgba(180, 77, 255, 0.12)", border: "#b44dff", text: "#d8b4fe", glow: "rgba(180, 77, 255, 0.35)" },
+      { bg: "rgba(255, 123, 0, 0.12)", border: "#ff7b00", text: "#fb923c", glow: "rgba(255, 123, 0, 0.35)" }
     ];
 
     // WHAT THIS DOES: Finds an existing ID for a word or creates a new one if it's new to our dictionary
@@ -320,16 +381,16 @@
       container.innerHTML = "";
 
       if (tokens.length === 0) {
-        countBadge.textContent = "0 tokens";
-        container.innerHTML = "<span style='color: #9ca3af; font-size: 14px;'>No text entered. Type something above to see tokens.</span>";
+        countBadge.textContent = "0 TOKENS";
+        container.innerHTML = "<span style='color: #64748b; font-size: 13px;'>&gt; AWAITING INPUT STREAM...</span>";
         idsDisplay.textContent = "[]";
         return;
       }
 
       // Update count badge
-      countBadge.textContent = tokens.length + (tokens.length === 1 ? " token" : " tokens");
+      countBadge.textContent = tokens.length + (tokens.length === 1 ? " TOKEN" : " TOKENS");
 
-      // Render each token as a colored chip
+      // Render each token as a cyberpunk neon chip
       tokens.forEach(function(token, index) {
         const id = getOrAssignTokenId(token);
         tokenIds.push(id);
@@ -339,15 +400,17 @@
         const chip = document.createElement("div");
         chip.className = "token-chip";
         chip.style.backgroundColor = color.bg;
-        chip.style.borderColor = color.border;
+        chip.style.border = "1px solid " + color.border;
+        chip.style.boxShadow = "0 0 10px " + color.glow;
 
         const textSpan = document.createElement("span");
         textSpan.className = "token-text";
+        textSpan.style.color = color.text;
         textSpan.textContent = token;
 
         const idSpan = document.createElement("span");
         idSpan.className = "token-id";
-        idSpan.textContent = "ID: " + id;
+        idSpan.textContent = "ID:" + id;
 
         chip.appendChild(textSpan);
         chip.appendChild(idSpan);
